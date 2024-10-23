@@ -50,7 +50,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Загрузка начального URL
-        webView.loadUrl("YOUR_URL")
+        val your_url = "https://example.com"
+        webView.loadUrl(your_url)
 
         // Обработка перетаскивания для обновления
         swipeRefreshLayout.setOnRefreshListener {
