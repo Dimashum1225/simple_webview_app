@@ -48,4 +48,5 @@ webView.loadUrl("your_url")
 Замените `https://example.com` на нужный вам сайт.
 
 ## Скриншоты
+![image](https://github.com/user-attachments/assets/84c74bf8-5a05-444a-95ce-dbfd01fe3571)
 
