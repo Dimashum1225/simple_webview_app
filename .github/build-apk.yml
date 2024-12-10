@@ -1,0 +1,37 @@
+name: Build APK
+
+on:
+  push:
+    branches:
+      - main  # Укажите ветку, в которой будет выполняться сборка
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Скачиваем код из репозитория
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # 2. Устанавливаем JDK
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'zulu' # или adopt
+        java-version: '11'
+
+    # 3. Скачиваем зависимости Gradle
+    - name: Prepare dependencies
+      run: ./gradlew dependencies
+
+    # 4. Собираем APK
+    - name: Build Release APK
+      run: ./gradlew assembleRelease
+
+    # 5. Сохраняем собранный APK как артефакт
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: app-release.apk
+        path: app/build/outputs/apk/release/app-release.apk
