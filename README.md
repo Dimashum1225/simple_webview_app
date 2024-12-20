@@ -47,6 +47,40 @@ webView.loadUrl("your_url")
 
 Замените `https://example.com` на нужный вам сайт.
 
+
+
+Для того чтобы собрать APK Android-приложения без использования Android Studio на Windows, можно воспользоваться командной строкой и инструментами, такими как Gradle. Вот несколько шагов, которые могут помочь вам собрать APK:
+
+Установите JDK (Java Development Kit):
+
+Скачайте и установите JDK с официального сайта Oracle JDK или используйте OpenJDK.
+После установки настройте переменные среды для JDK:
+Переменная JAVA_HOME должна указывать на папку с JDK.
+Добавьте bin папку JDK в PATH.
+https://java-course.ru/begin/install-jdk/
+
+
+Скачайте Android SDK:
+
+Скачайте Android SDK с официального сайта Android Developers.
+Установите только необходимые компоненты SDK, такие как platform-tools и build-tools, если вы не хотите устанавливать весь Android Studio.
+Настройка переменных среды:
+
+Убедитесь, что SDK доступен через PATH. Для этого добавьте в переменные среды:
+ANDROID_HOME — путь к папке SDK.
+Добавьте папки platform-tools и tools в PATH.
+https://lumpics.ru/how-to-install-android-sdk/
+
+Использование Gradle для сборки:
+
+Скачайте Gradle и настройте переменную среды GRADLE_HOME на путь, где он установлен.
+Откройте командную строку в корне вашего проекта и выполните команду:
+https://gradle.org/install/
+напишите в командной строке
+gradle build
+Это сгенерирует APK в папке build/outputs/apk/.
+
+Или же вы можете просто скачать АPK файл Stepchess здесь
 ## Скриншоты
 ![image](https://github.com/user-attachments/assets/84c74bf8-5a05-444a-95ce-dbfd01fe3571)
 
