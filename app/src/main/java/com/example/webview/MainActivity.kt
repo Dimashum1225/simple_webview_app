@@ -1,17 +1,10 @@
 package com.example.webview
 
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.webkit.WebResourceError
-import android.webkit.WebResourceRequest
 import androidx.appcompat.app.AppCompatActivity
-import android.webkit.WebSettings
 import android.webkit.WebView
-import android.webkit.WebViewClient
 import android.widget.ProgressBar
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 class MainActivity : AppCompatActivity() {
