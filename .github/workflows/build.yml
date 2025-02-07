@@ -44,10 +44,11 @@ jobs:
           mvn deploy:deploy-file \
             -Dfile=app/build/outputs/apk/debug/app-debug.apk \
             -DrepositoryId=github \
-            -Durl=https://maven.pkg.github.com/Dimashum1225/simple_webview_app
+            -Durl=https://maven.pkg.github.com/${{ github.repository_owner }}/simple_webview_app \
             -DgroupId=com.example \
             -DartifactId=stepchess-apk \
             -Dversion=1.0.0 \
             -Dpackaging=apk
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+
