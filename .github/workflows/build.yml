@@ -1,0 +1,54 @@
+name: Android CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Set up Gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: Grant execute permission for Gradle
+        run: chmod +x gradlew
+
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug
+
+      - name: Create Maven settings for GitHub Packages
+        run: |
+          mkdir -p $HOME/.m2
+          echo "<settings><servers><server><id>github</id><username>${{ github.actor }}</username><password>${{ secrets.TOKEN }}</password></server></servers></settings>" > $HOME/.m2/settings.xml
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+
+      - name: Publish APK to GitHub Packages
+        run: |
+          mvn deploy:deploy-file \
+            -Dfile=app/build/outputs/apk/debug/app-debug.apk \
+            -DrepositoryId=github \
+            -Durl=https://maven.pkg.github.com/${{ github.repository_owner }}/simple_webview_app \
+            -DgroupId=com.example \
+            -DartifactId=stepchess-apk \
+            -Dversion=1.0.0 \
+            -Dpackaging=apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+
