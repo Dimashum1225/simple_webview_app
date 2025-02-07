@@ -32,9 +32,22 @@ jobs:
       - name: Build Debug APK
         run: ./gradlew assembleDebug
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-debug
-          path: app/build/outputs/apk/debug/app-debug.apk
+      - name: Create Maven settings for GitHub Packages
+        run: |
+          mkdir -p $HOME/.m2
+          echo "<settings><servers><server><id>github</id><username>${{ github.actor }}</username><password>${{ secrets.TOKEN }}</password></server></servers></settings>" > $HOME/.m2/settings.xml
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
 
+      - name: Publish APK to GitHub Packages
+        run: |
+          mvn deploy:deploy-file \
+            -Dfile=app/build/outputs/apk/debug/app-debug.apk \
+            -DrepositoryId=github \
+            -Durl=https://maven.pkg.github.com/${{ github.repository_owner }}/my-repo \
+            -DgroupId=com.example \
+            -DartifactId=stepchess-apk \
+            -Dversion=1.0.0 \
+            -Dpackaging=apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
