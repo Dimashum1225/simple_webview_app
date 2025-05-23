@@ -1,10 +1,16 @@
 package com.example.webview
 
+import android.graphics.Bitmap
 import android.os.Bundle
-import android.util.Log
+import android.view.View
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
 import androidx.appcompat.app.AppCompatActivity
+import android.webkit.WebSettings
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 class MainActivity : AppCompatActivity() {
@@ -18,44 +24,56 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         webView = findViewById(R.id.webview)
-        webView.settings.domStorageEnabled = true
-        webView.settings.javaScriptEnabled = true
-
         progressBar = findViewById(R.id.progressBar)
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout)
 
-        window.statusBarColor = ContextCompat.getColor(this, R.color.white)
-
-        Log.d("WebViewActivity", "onCreate: Инициализация WebView")
+        window.statusBarColor = ContextCompat.getColor(this,R.color.white)
 
         // Настройки WebView
         webView.settings.javaScriptEnabled = true
-        webView.webViewClient = MyWebViewClient(progressBar)
+        webView.webViewClient = object : WebViewClient() {
+            override fun onPageStarted(view: WebView, url: String?, favicon: Bitmap?) {
+                progressBar.visibility = View.VISIBLE
+            }
 
-        val url = "https://stepchess.ru/"
-        Log.d("WebViewActivity", "Загрузка URL: $url")
-        webView.loadUrl(url)
+            override fun onPageFinished(view: WebView, url: String?) {
+                progressBar.visibility = View.GONE
+                swipeRefreshLayout.isRefreshing = false // Остановить индикатор обновления
+            }
 
-        // Обновление страницы свайпом вниз
+            override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError) {
+                progressBar.visibility = View.GONE
+
+                swipeRefreshLayout.isRefreshing = false // Остановить индикатор обновления
+            }
+
+        }
+
+        // Загрузка начального URL
+        val your_url = "https://example.com"
+        webView.loadUrl(your_url)
+
+        // Обработка перетаскивания для обновления
         swipeRefreshLayout.setOnRefreshListener {
-            Log.d("WebViewActivity", "Обновление страницы")
-            webView.reload()
+            webView.reload() // Перезагрузить страницу
+        }
+        webView.setOnScrollChangeListener { _, _, scrollY, _, _ ->
+            // Если текущая позиция скролла == 0 (страница прокручена до самого верха)
+            swipeRefreshLayout.isEnabled = scrollY == 0
         }
 
-        // Включение SwipeRefresh только при прокрутке вверх
-        webView.setOnScrollChangeListener { _, _, scrollY, _, _ ->
-            val isAtTop = scrollY == 0
-            swipeRefreshLayout.isEnabled = isAtTop
-            Log.d("WebViewActivity", "Прокрутка страницы: scrollY = $scrollY, isAtTop = $isAtTop")
+        // Обработка перетаскивания для обновления
+        swipeRefreshLayout.setOnRefreshListener {
+            webView.reload() // Перезагружаем страницу
         }
+
     }
 
-    override fun onBackPressed() {
+
+    override fun onBackPressed() { //Думаю по названию понятно
         if (webView.canGoBack()) {
-            Log.d("WebViewActivity", "Назад в истории WebView")
             webView.goBack()
         } else {
-            Log.d("WebViewActivity", "Выход из WebViewActivity")
             super.onBackPressed()
         }
     }
